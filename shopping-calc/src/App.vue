@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import ShoppingItem from './components/ShoppingItem.vue'
+import { currency } from './utils/index.js'
 
 const cachedKey = 'shopping-calc.app'
 
@@ -14,6 +15,10 @@ const sum = computed(() => {
   return list.value
     .map(({ price, quantity }) => price * quantity)
     .reduce((a, b) => a + b, 0)
+})
+
+const sumCurrency = computed(() => {
+  return currency(sum.value)
 })
 
 function onDel(idx) {
@@ -74,7 +79,9 @@ watch(
       </li>
     </ol>
 
-    <div class="sum">总额：{{ sum }} 元，共计 {{ list.length }} 件商品</div>
+    <div class="sum">
+      总额：{{ sumCurrency }} 元，共计 {{ list.length }} 件商品
+    </div>
   </main>
 </template>
 
