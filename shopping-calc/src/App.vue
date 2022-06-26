@@ -21,6 +21,10 @@ const sumCurrency = computed(() => {
   return currency(sum.value)
 })
 
+const totalNum = computed(() => {
+  return list.value.map(({ quantity }) => quantity).reduce((a, b) => a + b, 0)
+})
+
 function onDel(idx) {
   list.value.splice(idx, 1)
 }
@@ -80,7 +84,7 @@ watch(
     </ol>
 
     <div class="sum">
-      总额：{{ sumCurrency }} 元，共计 {{ list.length }} 件商品
+      总额：{{ sumCurrency }} 元，共计 {{ totalNum }} 件商品
     </div>
   </main>
 </template>
