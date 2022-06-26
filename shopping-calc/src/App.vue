@@ -32,6 +32,9 @@ function onDel(idx) {
 }
 
 function onClearAll() {
+  const result = confirm('确定要清空所有数据？')
+  if (!result) return
+
   list.value = []
 }
 
