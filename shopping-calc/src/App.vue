@@ -22,7 +22,9 @@ const sumCurrency = computed(() => {
 })
 
 const totalNum = computed(() => {
-  return list.value.map(({ quantity }) => quantity).reduce((a, b) => a + b, 0)
+  return list.value
+    .map(({ quantity }) => quantity)
+    .reduce((a, b) => a + (b || 0), 0)
 })
 
 function onDel(idx) {
@@ -34,8 +36,7 @@ function onClearAll() {
 }
 
 function onAdd() {
-  const defaultLabel = '默认商品' + (list.value.length + 1)
-  list.value.push({ label: defaultLabel, price: 0, quantity: 1 })
+  list.value.push({ label: '', price: 0, quantity: 1 })
 }
 
 function store(val) {
@@ -67,21 +68,26 @@ watch(
   <main class="calc">
     <h1>购物计算器</h1>
 
-    <div class="action">
-      <button @click="onAdd">添加</button>
-      <button @click="onClearAll" class="ml1">清空所有</button>
+    <div class="action mb1 mt1">
+      <button @click="onClearAll">清空所有</button>
     </div>
     <div class="list" v-if="list.length <= 0">没有数据</div>
-    <ol class="list" v-else>
-      <li v-for="(item, index) of list">
+    <div class="list" v-else>
+      <div v-for="(item, index) of list" class="flex items-center mb2">
+        <div class="w-2">{{ index + 1 }}.</div>
         <ShoppingItem
+          class="flex-1 ml2"
           v-model:label="item.label"
           v-model:price.number="item.price"
           v-model:quantity.number="item.quantity"
           @del="onDel(index)"
         />
-      </li>
-    </ol>
+      </div>
+    </div>
+
+    <div class="pb-5 flex mt1">
+      <button class="flex-1 btn-primary" @click="onAdd">添加</button>
+    </div>
 
     <div class="sum">
       总额：{{ sumCurrency }} 元，共计 {{ totalNum }} 件商品
@@ -93,6 +99,36 @@ watch(
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+}
+
+button {
+  appearance: none;
+  border-radius: 0.5em;
+  padding: 0.6em 0.8em;
+  border: none;
+}
+
+input {
+  padding: 0.4em;
+}
+
+button,
+input {
+  font-size: 14px;
+}
+
+.flex {
+  display: flex;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-shrink-1 {
+  flex-shrink: 1;
+}
+.items-center {
+  align-items: center;
 }
 
 .calc {
@@ -109,8 +145,15 @@ watch(
   color: #fff;
 }
 
-.list {
-  padding: 1em;
+.w-1 {
+  width: 1em;
+}
+
+.w-2 {
+  width: 1.2em;
+}
+
+.pb-5 {
   padding-bottom: 5em;
 }
 
@@ -122,7 +165,20 @@ watch(
   margin-left: 0.5em;
 }
 
-li {
+.mb1 {
+  margin-bottom: 1em;
+}
+
+.mb2 {
   margin-bottom: 0.5em;
+}
+
+.mt1 {
+  margin-top: 1em;
+}
+
+.btn-primary {
+  background: green;
+  color: white;
 }
 </style>
