@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="64x64" href="./icon.png" />
     <title>番茄钟 pomodoro</title>
     <style>
       :root {
@@ -70,10 +71,14 @@
       // 一个番茄钟计时跨度为 25 分钟
       const TIME_SPAN = 25 * 60 * 1000
       const TICK = 50
+      const DEFAULT_TITLE = '番茄钟 - Pomodoro'
+      const IDLE = 'idle'
+      const WORKING = 'working'
 
       let _startTime = 0
       let _endTime = _startTime + TIME_SPAN
       let _timer = null
+      let _mode = IDLE
 
       const startBtnEl = $('#start-btn')
       const quitBtnEl = $('#quit-btn')
@@ -94,6 +99,7 @@
 
       function reset() {
         clearInterval(_timer)
+        _mode = IDLE
 
         resetTime()
 
@@ -115,7 +121,14 @@
        * @param {number} t
        */
       function renderTime(t) {
-        timeEl.textContent = getRenderTime(t, _endTime)
+        const res = getRenderTime(t, _endTime)
+        timeEl.textContent = res
+
+        if (_mode === WORKING) {
+          document.title = res
+        } else {
+          document.title = DEFAULT_TITLE
+        }
       }
 
       /**
@@ -155,7 +168,7 @@
       function startTimer() {
         if (_timer) clearInterval(_timer)
 
-        console.log('startTimer')
+        _mode = WORKING
 
         tickAudio.play()
 
@@ -163,6 +176,8 @@
           const now = Date.now()
           if (now >= _endTime) {
             clearInterval(_timer)
+
+            _mode = IDLE
 
             tickAudio.pause()
             alarmAudio.currentTime = 0
