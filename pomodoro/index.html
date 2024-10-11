@@ -5,12 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>番茄钟 pomodoro</title>
     <style>
+      :root {
+        --tomato: #d32816;
+        --btn-bg: var(--tomato);
+        --btn-fg: white;
+      }
+
       .tomato {
-        color: #d32816;
+        color: var(--tomato);
+      }
+
+      .tc {
+        text-align: center;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .action {
+        margin-top: 4em;
+      }
+
+      .action button {
+        font-size: 1.5em;
+        padding: 1em 2em;
+        border-radius: 0.5em;
+        font-weight: bold;
+        border-width: 0;
+        color: var(--btn-fg);
+        background: var(--btn-bg);
+      }
+
+      .time {
+        font-size: 4em;
       }
     </style>
   </head>
   <body>
-    <h1 class="tomato">🍅 番茄钟</h1>
+    <main class="tc">
+      <h1 class="tomato">🍅 番茄钟</h1>
+      <div id="time" class="time">25:00</div>
+      <div class="action">
+        <button id="start-btn" type="button">开始计时</button>
+        <button id="quit-btn" class="hidden" type="button">放弃计时</button>
+      </div>
+    </main>
+
+    <script>
+      // 一个番茄钟计时跨度为 25 分钟
+      const TIME_SPAN = 25 * 60 * 1000
+      const TICK = 50
+
+      let _startTime = 0
+      let _endTime = _startTime + TIME_SPAN
+      let _timer = null
+
+      const startBtnEl = $('#start-btn')
+      const quitBtnEl = $('#quit-btn')
+      const timeEl = $('#time')
+
+      init()
+
+      function init() {
+        startBtnEl.addEventListener('click', handleStart)
+        quitBtnEl.addEventListener('click', handleQuit)
+
+        resetTime()
+      }
+
+      function reset() {
+        clearInterval(_timer)
+
+        resetTime()
+
+        toggleVisible(startBtnEl, true)
+        toggleVisible(quitBtnEl, false)
+      }
+
+      function resetTime() {
+        _startTime = Date.now()
+        _endTime = _startTime + TIME_SPAN
+        renderTime(_startTime)
+      }
+
+      /**
+       * 更新倒计时的显示文本
+       * @param {number} t
+       */
+      function renderTime(t) {
+        timeEl.textContent = getRenderTime(t, _endTime)
+      }
+
+      /**
+       * 获取显示的时间文本
+       * @param {number} start
+       * @param {number} end
+       */
+      function getRenderTime(start, end) {
+        const diff = end - start
+        const diffInSec = Math.floor(diff / 1000)
+
+        const m = Math.floor(diffInSec / 60)
+        const s = diffInSec % 60
+
+        return [m, s].map(n => String(n).padStart(2, '0')).join(':')
+      }
+
+      function handleStart() {
+        resetTime()
+
+        startTimer()
+
+        toggleVisible(startBtnEl, false)
+        toggleVisible(quitBtnEl, true)
+      }
+
+      function handleQuit() {
+        const result = confirm('确定要放弃当前番茄钟吗？')
+        if (result) {
+          reset()
+        }
+      }
+
+      /**
+       * 启动计时器
+       */
+      function startTimer() {
+        if (_timer) clearInterval(_timer)
+
+        _timer = setInterval(() => {
+          const now = Date.now()
+          if (now >= _endTime) {
+            clearInterval(_timer)
+            alert('DONE')
+            return
+          }
+
+          renderTime(now)
+        }, TICK)
+      }
+
+      function toggleVisible(el, visible) {
+        if (visible) {
+          el.classList.remove('hidden')
+        } else {
+          el.classList.add('hidden')
+        }
+      }
+
+      function $(el) {
+        return document.querySelector(el)
+      }
+    </script>
   </body>
 </html>
