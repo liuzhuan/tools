@@ -9,6 +9,9 @@
         --tomato: #d32816;
         --btn-bg: var(--tomato);
         --btn-fg: white;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+          sans-serif;
       }
 
       .tomato {
@@ -35,6 +38,7 @@
         border-width: 0;
         color: var(--btn-fg);
         background: var(--btn-bg);
+        cursor: pointer;
       }
 
       .time {
@@ -52,6 +56,13 @@
       </div>
     </main>
 
+    <audio
+      id="tick"
+      loop
+      src="https://cdn.pixabay.com/audio/2024/10/02/audio_aaa48ac79b.mp3"
+    />
+    <audio id="alarm" src="./alarm.mp3" />
+
     <script>
       // 一个番茄钟计时跨度为 25 分钟
       const TIME_SPAN = 25 * 60 * 1000
@@ -64,6 +75,10 @@
       const startBtnEl = $('#start-btn')
       const quitBtnEl = $('#quit-btn')
       const timeEl = $('#time')
+      /** @type {HTMLAudioElement} */
+      const tickAudio = $('#tick')
+      /** @type {HTMLAudioElement} */
+      const alarmAudio = $('#alarm')
 
       init()
 
@@ -81,6 +96,9 @@
 
         toggleVisible(startBtnEl, true)
         toggleVisible(quitBtnEl, false)
+
+        tickAudio.pause()
+        alarmAudio.pause()
       }
 
       function resetTime() {
@@ -134,11 +152,24 @@
       function startTimer() {
         if (_timer) clearInterval(_timer)
 
+        console.log('startTimer')
+
+        tickAudio.play()
+
         _timer = setInterval(() => {
           const now = Date.now()
           if (now >= _endTime) {
             clearInterval(_timer)
-            alert('DONE')
+
+            tickAudio.pause()
+            alarmAudio.currentTime = 0
+            alarmAudio.play()
+
+            toggleVisible(quitBtnEl, false)
+
+            setTimeout(() => {
+              reset()
+            }, 5000)
             return
           }
 
