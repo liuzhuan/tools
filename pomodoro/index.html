@@ -45,6 +45,13 @@
       .time {
         font-size: 4em;
       }
+
+      .scene {
+        font-size: 1em;
+        color: silver;
+        margin-top: 1em;
+        user-select: none;
+      }
     </style>
   </head>
   <body>
@@ -55,10 +62,11 @@
         <button id="start-btn" type="button">开始计时</button>
         <button id="quit-btn" class="hidden" type="button">放弃计时</button>
       </div>
+      <div id="scene" class="scene"></div>
     </main>
 
     <audio
-      id="tick"
+      id="bg"
       loop
       src="https://cdn.pixabay.com/audio/2024/10/02/audio_aaa48ac79b.mp3"
     />
@@ -80,11 +88,35 @@
       let _timer = null
       let _mode = IDLE
 
+      const sounds = [
+        {
+          src: 'https://cdn.pixabay.com/audio/2024/10/02/audio_aaa48ac79b.mp3',
+          label: '森林',
+        },
+        {
+          src: 'https://cdn.pixabay.com/audio/2023/10/02/audio_c695edda8e.mp3',
+          label: '大海',
+        },
+        {
+          src: 'https://cdn.pixabay.com/audio/2022/03/10/audio_818829b8ca.mp3',
+          label: '海边',
+        },
+        {
+          src: 'https://cdn.pixabay.com/audio/2021/11/23/audio_64b2dd1bce.mp3',
+          label: '学习',
+        },
+        {
+          src: 'https://cdn.pixabay.com/audio/2022/11/11/audio_84306ee149.mp3',
+          label: '安静',
+        },
+      ]
+
       const startBtnEl = $('#start-btn')
       const quitBtnEl = $('#quit-btn')
       const timeEl = $('#time')
+      const sceneEl = $('#scene')
       /** @type {HTMLAudioElement} */
-      const tickAudio = $('#tick')
+      const bgAudio = $('#bg')
       /** @type {HTMLAudioElement} */
       const alarmAudio = $('#alarm')
 
@@ -106,7 +138,7 @@
         toggleVisible(startBtnEl, true)
         toggleVisible(quitBtnEl, false)
 
-        tickAudio.pause()
+        bgAudio.pause()
         alarmAudio.pause()
       }
 
@@ -170,7 +202,11 @@
 
         _mode = WORKING
 
-        tickAudio.play()
+        const { src, label } = getRandomSound()
+        bgAudio.src = src
+        bgAudio.volume = 0.6
+        bgAudio.play()
+        sceneEl.textContent = label
 
         _timer = setInterval(() => {
           const now = Date.now()
@@ -179,7 +215,7 @@
 
             _mode = IDLE
 
-            tickAudio.pause()
+            bgAudio.pause()
             alarmAudio.currentTime = 0
             alarmAudio.play()
 
@@ -193,6 +229,11 @@
 
           renderTime(now)
         }, TICK)
+      }
+
+      function getRandomSound() {
+        const len = sounds.length
+        return sounds[Math.floor(Math.random() * len)]
       }
 
       function toggleVisible(el, visible) {
