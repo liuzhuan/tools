@@ -1,0 +1,21 @@
+{
+  "name": "番茄钟 Pomodoro",
+  "short_name": "Pomodoro",
+  "start_url": "./index.html",
+  "description": "一个简单的番茄钟计时器",
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#d32816",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
