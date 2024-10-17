@@ -76,7 +76,7 @@
       src="https://cdn.pixabay.com/audio/2021/09/27/audio_91211934db.mp3"
     />
 
-    <script>
+    <script type="module">
       // 一个番茄钟计时跨度为 25 分钟
       const TIME_SPAN = 25 * 60 * 1000
       const TICK = 50
@@ -124,10 +124,19 @@
       init()
 
       function init() {
+        setupServiceWorkers()
         startBtnEl.addEventListener('click', handleStart)
         quitBtnEl.addEventListener('click', handleQuit)
 
         resetTime()
+      }
+
+      async function setupServiceWorkers() {
+        if ('serviceWorker' in navigator) {
+          await navigator.serviceWorker.register('./sw.js')
+        } else {
+          console.error('service workers are not supported')
+        }
       }
 
       function reset() {
