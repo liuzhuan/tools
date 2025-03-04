@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Previewer</title>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+
+      .flex {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .flex-1 {
+        flex: 1;
+      }
+
+      #editor {
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="flex">
+      <textarea
+        id="editor"
+        class="flex-1"
+        placeholder="请输入HTML代码"
+      ></textarea>
+      <iframe id="preview" class="flex-1"></iframe>
+    </section>
+
+    <script>
+      const editor = document.getElementById('editor');
+      const preview = document.getElementById('preview');
+      let isCompositing = false;
+
+      init();
+
+      function init() {
+        if (location.hash) {
+          const value = decode(location.hash.slice(1));
+          editor.value = preview.srcdoc = value;
+        }
+      }
+
+      editor.addEventListener(
+        'input',
+        debounce((e) => {
+          if (isCompositing) return;
+          preview.srcdoc = e.target.value;
+          updateHash(preview.srcdoc);
+        }, 200)
+      );
+
+      function encode(value) {
+        return window.btoa(encodeURIComponent(value));
+      }
+
+      function decode(code) {
+        return decodeURIComponent(window.atob(code));
+      }
+
+      function updateHash(value) {
+        location.hash = encode(value);
+      }
+
+      editor.addEventListener('compositionstart', handleComposition);
+      editor.addEventListener('compositionupdate', handleComposition);
+      editor.addEventListener('compositionend', handleComposition);
+
+      function handleComposition(e) {
+        switch (e.type) {
+          case 'compositionstart':
+            isCompositing = true;
+            break;
+
+          case 'compositionend':
+            isCompositing = false;
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      function debounce(func, delay) {
+        let timerId;
+
+        return function () {
+          const context = this;
+          const args = arguments;
+          clearTimeout(timerId);
+          timerId = setTimeout(function () {
+            func.apply(context, args);
+          }, delay);
+        };
+      }
+    </script>
+  </body>
+</html>
