@@ -15,6 +15,10 @@
         height: 100%;
       }
 
+      .dragging {
+        user-select: none;
+      }
+
       .flex {
         display: flex;
         width: 100vw;
@@ -59,6 +63,10 @@
         display: none;
       }
 
+      .dragging #event-tracker {
+        display: block;
+      }
+
       .cm-editor {
         height: 100%;
       }
@@ -87,16 +95,6 @@
         }
       }
     </style>
-
-    <script type="importmap">
-      {
-        "imports": {
-          "codemirror": "https://esm.sh/codemirror@6.0.1",
-          "@codemirror/view": "https://esm.sh/@codemirror/view@6.36.4",
-          "@codemirror/lang-html": "https://esm.sh/@codemirror/lang-html@6.4.9"
-        }
-      }
-    </script>
   </head>
 
   <body>
@@ -115,9 +113,12 @@
     </section>
 
     <script type="module">
-      import { basicSetup } from 'codemirror';
-      import { EditorView, placeholder } from '@codemirror/view';
-      import { html } from '@codemirror/lang-html';
+      import {
+        basicSetup,
+        EditorView,
+        placeholder,
+        html,
+      } from './dist/main.BSYX7B_0.js';
 
       const preview = document.getElementById('preview');
 
@@ -208,15 +209,13 @@
       dragger.addEventListener('pointerdown', handlePointerDown);
 
       function handlePointerDown(e) {
-        eventTracker.style.display = 'block';
-        document.body.style.userSelect = 'none';
+        document.body.classList.add('dragging');
         document.addEventListener('pointerup', handlePointerUp);
         document.addEventListener('pointermove', handlePointerMove);
       }
 
       function handlePointerUp(e) {
-        eventTracker.style.display = 'none';
-        document.body.style.userSelect = 'auto';
+        document.body.classList.remove('dragging');
         document.removeEventListener('pointerup', handlePointerUp);
         document.removeEventListener('pointermove', handlePointerMove);
       }
