@@ -59,11 +59,12 @@ h2 {
 ul,
 ol {
   margin: 1em 0;
-  padding-inline-start: 1em;
+  padding-inline-start: 2em;
 }
 
 pre {
   margin: 1em 0;
+  overflow-x: auto;
 }
 `,_6=Ue(),TO="$$markdown-online$$",Z6=document.getElementById("preview"),T6=C.updateListener.of(i=>{if(i.docChanged){const e=i.state.doc.toString();E6(e)}}),E6=R6(i=>{Yl.composing||(EO(i),M6(i))},500),Yl=new C({doc:"",parent:document.getElementById("editor-wrapper"),extensions:[zk,Zp(),V3(),T6,l1("Input some Markdown")]});D6();function D6(){const i=localStorage.getItem(TO);i&&(EO(i),Yl.dispatch({changes:{from:0,to:Yl.state.doc.length,insert:i}}))}function EO(i){Z6.srcdoc=`
   <!doctype html>
