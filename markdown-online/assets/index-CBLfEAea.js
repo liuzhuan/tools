@@ -62,19 +62,36 @@ ol {
   padding-inline-start: 2em;
 }
 
+code {
+  font-size: 16px;
+}
+
 pre {
   margin: 1em 0;
   overflow-x: auto;
   border: 1px solid silver;
   border-radius: 8px;
+}
+
+pre code {
   font-size: 14px;
-  padding: 8px;
 }
 
 blockquote {
   padding-left: 10px;
   border-left: 3px solid #dbdbdb;
   margin: 1em 0;
+}
+
+img {
+  max-width: 100%;
+  padding: 8px;
+  border: 1px solid silver;
+  box-sizing: border-box;
+  border-radius: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 `,_6=Ue(),ZO="$$markdown-online$$",Z6=document.getElementById("preview"),T6=C.updateListener.of(i=>{if(i.docChanged){const e=i.state.doc.toString();D6(e)}}),E6=C.domEventHandlers({paste(i,e){const t=i.clipboardData.items;for(const n of t)if(n.type.indexOf("image")!==-1){const r=n.getAsFile(),s=new FileReader;s.onload=o=>{const l=o.target.result,a=e.state.update({changes:{from:e.state.selection.main.head,insert:`
 ![image](${l})
@@ -83,8 +100,12 @@ blockquote {
   <html>
     <head>
       <style>${A6}</style>
+      <link rel="stylesheet" href="./highlight.js/11.9.0/styles/xcode.min.css">
+      <script src="./highlight.js/11.9.0/highlight.min.js"><\/script>
+      <script src="./highlight.js/11.9.0/languages/javascript.min.js"><\/script>
     </head>
     <body>
       ${_6.render(i)}
+      <script>hljs.highlightAll();<\/script>
     </body>
   </html>`}function R6(i){localStorage.setItem(ZO,i)}function X6(i,e){let t;return function(){const n=this,r=arguments;clearTimeout(t),t=setTimeout(function(){i.apply(n,r)},e)}}const L6=document.getElementById("dragger"),Ga=document.getElementById("event-tracker");let Ha=!1;const EO=window.matchMedia("(max-width: 767px)");Ha=EO.matches;const DO=new ResizeObserver(i=>{for(const e of i){const{width:t,height:n}=e.contentRect,r=Math.round(t),s=Math.round(n);Ga.textContent=`${r}x${s}`}});EO.addEventListener("change",i=>{Ha=i.matches});L6.addEventListener("pointerdown",q6);function q6(i){document.body.classList.add("dragging"),document.addEventListener("pointerup",MO),document.addEventListener("pointermove",RO),DO.observe(Ga)}function MO(i){document.body.classList.remove("dragging"),document.removeEventListener("pointerup",MO),document.removeEventListener("pointermove",RO),DO.unobserve(Ga)}function RO(i){const e=document.getElementById("editor-wrapper");Ha?e.style.height=i.clientY+"px":e.style.width=i.clientX+"px"}
